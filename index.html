@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI WeatherWise</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+       <header>
+
+    <div class="logo">
+      <h1> 🌦️ WeatherWise </h1>
+    </div>
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="city"
+            placeholder="Enter city name"
+        >
+
+        <button type="button" id="searchBtn">
+            Search
+        </button>
+
+    </div>
+
+</header>
+
+        </header>
+
+
+        <main>
+
+            <!-- Current Weather -->
+
+            <section class="current-weather">
+
+                <h2 id="location">
+                    Search for a city
+                </h2>
+
+                <div class="weather-main">
+
+                    <div>
+
+                        <div class="temperature" id="temperature">
+                            --°C
+                        </div>
+
+                        <div class="condition" id="condition">
+                            --
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Weather Details -->
+
+                <div class="weather-details">
+
+                    <div class="detail-card">
+                        <h3>Feels Like</h3>
+                        <p id="feelsLike">--°C</p>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Humidity</h3>
+                        <p id="humidity">--%</p>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Wind</h3>
+                        <p id="wind">-- km/h</p>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Pressure</h3>
+                        <p id="pressure">-- hPa</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Weather Information -->
+
+            <h2 class="section-title">
+                Weather Information
+            </h2>
+
+            <section class="forecast">
+
+                <div class="forecast-card">
+                    <h3>Temperature</h3>
+                    <p id="maxTemp">--°C</p>
+                </div>
+
+                <div class="forecast-card">
+                    <h3>Visibility</h3>
+                    <p id="visibility">-- km</p>
+                </div>
+
+                <div class="forecast-card">
+                    <h3>UV Index</h3>
+                    <p id="uv">--</p>
+                </div>
+
+                <div class="forecast-card">
+                    <h3>Rain Chance</h3>
+                    <p id="rain">--%</p>
+                </div>
+
+            </section>
+
+
+            <!-- AI Weather -->
+
+            <section class="ai-section">
+
+                <h2>🤖 AI Weather Insight</h2>
+
+                <p id="aiAdvice">
+                    Search for a city to get weather information.
+                </p>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- JavaScript -->
+
+    <script>
+
+        // Put your WeatherAPI key between the quotation marks
+        const API_KEY = "ec44caee1ee04f0988b133910263009";
+
+
+        // Get the Search button
+        const searchButton = document.getElementById("searchBtn");
+
+
+        // Run the function when Search is clicked
+        searchButton.addEventListener("click", searchWeather);
+
+
+        // Weather function
+        async function searchWeather() {
+
+            const city = document.getElementById("city").value.trim();
+
+
+            // Check whether city was entered
+            if (city === "") {
+
+                alert("Please enter a city name.");
+
+                return;
+            }
+
+
+            // WeatherAPI URL
+            const url =
+                `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${encodeURIComponent(city)}&aqi=yes`;
+
+
+            try {
+
+                // Get data from WeatherAPI
+                const response = await fetch(url);
+
+
+                // Check response
+                if (!response.ok) {
+
+                    throw new Error("Weather data could not be loaded.");
+
+                }
+
+
+                // Convert response to JSON
+                const data = await response.json();
+
+
+                // Location
+                document.getElementById("location").textContent =
+                    `${data.location.name}, ${data.location.country}`;
+
+
+                // Temperature
+                document.getElementById("temperature").textContent =
+                    `${data.current.temp_c}°C`;
+
+
+                // Weather condition
+                document.getElementById("condition").textContent =
+                    data.current.condition.text;
+
+
+                // Feels like
+                document.getElementById("feelsLike").textContent =
+                    `${data.current.feelslike_c}°C`;
+
+
+                // Humidity
+                document.getElementById("humidity").textContent =
+                    `${data.current.humidity}%`;
+
+
+                // Wind
+                document.getElementById("wind").textContent =
+                    `${data.current.wind_kph} km/h`;
+
+
+                // Pressure
+                document.getElementById("pressure").textContent =
+                    `${data.current.pressure_mb} hPa`;
+
+
+                // Temperature information
+                document.getElementById("maxTemp").textContent =
+                    `${data.current.temp_c}°C`;
+
+
+                // Visibility
+                document.getElementById("visibility").textContent =
+                    `${data.current.vis_km} km`;
+
+
+                // UV Index
+                document.getElementById("uv").textContent =
+                    data.current.uv;
+
+
+                // Rain
+                document.getElementById("rain").textContent =
+                    "Current data";
+
+
+                // AI Weather Advice
+
+                const temperature = data.current.temp_c;
+
+                const condition =
+                    data.current.condition.text.toLowerCase();
+
+                let advice;
+
+
+                if (condition.includes("rain")) {
+
+                    advice =
+                        "🌧️ Rainy conditions are present. Carry an umbrella if you are going outside.";
+
+                }
+
+                else if (temperature >= 35) {
+
+                    advice =
+                        "☀️ It is very warm. Stay hydrated and avoid staying outdoors for long periods.";
+
+                }
+
+                else if (temperature <= 20) {
+
+                    advice =
+                        "🧥 The weather is relatively cool. Consider wearing comfortable clothing.";
+
+                }
+
+                else {
+
+                    advice =
+                        "🌤️ The weather looks moderate. It is suitable for normal outdoor activities.";
+
+                }
+
+
+                document.getElementById("aiAdvice").textContent =
+                    advice;
+
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Unable to get weather data. Check your city name and API key."
+                );
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>
